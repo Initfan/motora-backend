@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: motor-care-postgres
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: motor-care
+      POSTGRES_PASSWORD: motors
+      POSTGRES_DB: motor-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - motor_care_postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  motor_care_postgres_data:
