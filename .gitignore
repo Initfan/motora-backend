@@ -5,6 +5,13 @@
 /.pnp
 .pnp.js
 
+#prisma
+/src/generated
+
+#env
+.env
+.env.*
+
 # testing
 /coverage
 
