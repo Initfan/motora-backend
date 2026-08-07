@@ -1,11 +1,23 @@
 // Service handles business logic, decoupled from Elysia controller
-import { status } from "elysia";
+import { Cookie, status } from "elysia";
 import bcrypt from "bcrypt";
 
 import type { AuthModel } from "./model";
 import { prisma } from "@/utils/prisma";
+import { UserGetPayload } from "@/generated/prisma/models";
 
 export class Auth {
+  static async signIn({ email, password }: AuthModel["signInBody"]) {
+    const user = await prisma.user.findFirst({ where: { email } });
+
+    if (!user) return status(404, "User not found");
+
+    if (!(await bcrypt.compare(password, user?.password)))
+      throw status(400, "Invalid email or password");
+
+    return user;
+  }
+
   static async signUp(data: AuthModel["signUpBody"]) {
     const { email, password } = data;
 
