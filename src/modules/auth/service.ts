@@ -1,10 +1,8 @@
-// Service handles business logic, decoupled from Elysia controller
-import { Cookie, status } from "elysia";
+import { status } from "elysia";
 import bcrypt from "bcrypt";
 
 import type { AuthModel } from "./model";
 import { prisma } from "@/utils/prisma";
-import { UserGetPayload } from "@/generated/prisma/models";
 
 export class Auth {
   static async signIn({ email, password }: AuthModel["signInBody"]) {
