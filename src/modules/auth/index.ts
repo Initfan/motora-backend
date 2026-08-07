@@ -1,6 +1,8 @@
 import { Elysia, status } from "elysia";
 import { Auth } from "./service";
 import { AuthModel } from "./model";
+import { SignJWT } from "jose";
+import { cookieModel } from "@/utils/model";
 
 const auth = new Elysia({ name: "auth" })
   .guard(
@@ -15,11 +17,13 @@ const auth = new Elysia({ name: "auth" })
         return status("Accepted", "Logout succeed");
       }),
   )
+
   .guard(
     {
       beforeHandle({ cookie }) {
         if (cookie.access_token.value) throw status(200, "Authorized");
       },
+      cookie: cookieModel,
     },
     (app) =>
       app
@@ -29,10 +33,11 @@ const auth = new Elysia({ name: "auth" })
         .post(
           "login",
           async ({ body, cookie }) => {
-            const user = await Auth.signIn(body);
+            const { user, token } = await Auth.signIn(body);
+            const { id, password, ...data } = user;
 
             cookie.access_token.set({
-              value: user,
+              value: token,
               httpOnly: true,
               secure: process.env.NODE_ENV === "production",
               sameSite: "lax",
@@ -40,10 +45,11 @@ const auth = new Elysia({ name: "auth" })
               maxAge: 60 * 60 * 24 * 7,
             });
 
-            return user;
+            return status(200, { message: "Login Success", data });
           },
           {
             body: AuthModel.signInBody,
+            cookie: cookieModel,
           },
         ),
   );
