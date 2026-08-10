@@ -39,15 +39,16 @@ enum JOB_TYPE {
 }
 
 model Motorcycle {
-  id                Int               @id @default(autoincrement())
-  brand             String
-  model             String
-  year              String
-  transmission      TRANSMISSION_TYPE @default(MATIC)
-  police_number     String            @unique
-  kilometers        Int
-  last_service_date DateTime?
-  status            String?
+  id                     Int               @id @default(autoincrement())
+  brand                  String
+  model                  String
+  year                   String
+  transmission           TRANSMISSION_TYPE @default(MATIC)
+  police_number          String            @unique
+  kilometers             Int
+  avg_kilometers_per_day Int?              @default(0)
+  last_service_date      DateTime?         @default(now())
+  status                 String?
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int  @unique

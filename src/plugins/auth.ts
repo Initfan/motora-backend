@@ -6,9 +6,7 @@ export const authPlugin = new Elysia({
   name: "auth-plugin",
 })
   .guard({
-    cookie: t.Cookie({
-      access_token: t.Optional(t.String()),
-    }),
+    cookie: cookieModel,
   })
   .resolve({ as: "scoped" }, async ({ cookie }) => {
     const token = cookie.access_token.value;
