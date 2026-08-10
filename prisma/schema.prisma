@@ -15,7 +15,8 @@ model User {
   username  String?
   createdAt DateTime @default(now())
 
-  drivers Driver?
+  drivers     Driver?
+  motorcycles Motorcycle[]
 }
 
 model Driver {
@@ -29,8 +30,6 @@ model Driver {
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int  @unique
-
-  motorcycles Motorcycle[]
 }
 
 enum JOB_TYPE {
@@ -50,8 +49,8 @@ model Motorcycle {
   last_service_date DateTime?
   status            String?
 
-  driver    Driver @relation(fields: [driver_id], references: [id])
-  driver_id Int    @unique
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
 }
 
 enum TRANSMISSION_TYPE {
