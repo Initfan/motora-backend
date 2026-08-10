@@ -29,10 +29,32 @@ model Driver {
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int  @unique
+
+  motorcycles Motorcycle[]
 }
 
 enum JOB_TYPE {
   FULL_TIME
   FREELANCE
   PART_TIME
+}
+
+model Motorcycle {
+  id                Int               @id @default(autoincrement())
+  brand             String
+  model             String
+  year              String
+  transmission      TRANSMISSION_TYPE @default(MATIC)
+  police_number     String
+  kilometers        Int
+  last_service_date DateTime?
+  status            String?
+
+  driver    Driver @relation(fields: [driver_id], references: [id])
+  driver_id Int    @unique
+}
+
+enum TRANSMISSION_TYPE {
+  MATIC
+  MANUAL
 }
