@@ -1,10 +1,11 @@
-datasource db {
-  provider = "postgresql"
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["relationJoins"]
 }
 
-generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+datasource db {
+  provider = "postgresql"
 }
 
 model User {
@@ -13,4 +14,25 @@ model User {
   email     String   @unique
   username  String?
   createdAt DateTime @default(now())
+
+  drivers Driver?
+}
+
+model Driver {
+  id               Int      @id @default(autoincrement())
+  driver_name      String
+  photo            String?
+  platform         String[]
+  profit_goal      Int
+  job_type         JOB_TYPE @default(FULL_TIME)
+  avg_active_hours Int      @default(0)
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+}
+
+enum JOB_TYPE {
+  FULL_TIME
+  FREELANCE
+  PART_TIME
 }

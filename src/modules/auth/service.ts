@@ -15,7 +15,7 @@ export class Auth {
     if (!(await bcrypt.compare(password, user.password)))
       throw status(400, "Invalid email or password");
 
-    const token = await new SignJWT({ user })
+    const token = await new SignJWT({ sub: String(user.id) })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("7d")
       .sign(new TextEncoder().encode(process.env.JWT_SECRET));

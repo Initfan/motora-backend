@@ -3,7 +3,8 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "prisma": "export BROWSER=zen-browser; bunx prisma format; bunx prisma generate; bunx prisma studio"
   },
   "dependencies": {
     "@elysia/cors": "^1.4.2",
