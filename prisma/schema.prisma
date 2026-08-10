@@ -44,7 +44,7 @@ model Motorcycle {
   model             String
   year              String
   transmission      TRANSMISSION_TYPE @default(MATIC)
-  police_number     String
+  police_number     String            @unique
   kilometers        Int
   last_service_date DateTime?
   status            String?
