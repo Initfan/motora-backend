@@ -8,11 +8,28 @@ export class WorkSession {
     data: WorkModel["start"],
     user_id: WorkModel["user_id"],
   ) {
-    const session = await prisma.workSession.create({
-      data: { ...data, user_id },
-    });
-    return status(201, { message: "Work Session Started", session });
+    try {
+      const session = await prisma.$transaction(async (tx) => {
+        const motor = await tx.motorcycle.findFirst({
+          where: { user_id },
+        });
+
+        if (!motor) throw new Error("Add Motorcycle to Start Working");
+
+        return await tx.workSession.create({
+          data: { ...data, user_id },
+        });
+      });
+
+      return status(201, { message: "Work Session Started", session });
+    } catch (error: any) {
+      return handlePrismaError(
+        error,
+        error.message ?? "Failed to Start Work Session, Try again later",
+      );
+    }
   }
+
   static async finishWorkSession(data: WorkModel["finish"]) {
     const { session_id, ...session } = data;
 
