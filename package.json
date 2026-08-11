@@ -4,7 +4,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
-    "prisma": "export BROWSER=zen-browser; bunx prisma format; bunx prisma generate; bunx prisma studio"
+    "prisma": "export BROWSER=zen-browser; bunx prisma format; bunx prisma generate; bunx prisma studio",
+    "prisma:migrate": "bunx prisma migrate dev"
   },
   "dependencies": {
     "@elysia/cors": "^1.4.2",

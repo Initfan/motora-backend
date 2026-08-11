@@ -15,8 +15,11 @@ model User {
   username  String?
   createdAt DateTime @default(now())
 
-  drivers     Driver?
+  drivers Driver[]
+
   motorcycles Motorcycle[]
+
+  workSessions WorkSession[]
 }
 
 model Driver {
@@ -57,4 +60,28 @@ model Motorcycle {
 enum TRANSMISSION_TYPE {
   MATIC
   MANUAL
+}
+
+model WorkSession {
+  id                Int        @id @default(autoincrement())
+  kilometers_start  Float      @default(0)
+  kilometers_finish Float      @default(0)
+  platform          String
+  goal_profit       Int
+  fuel_condition    String
+  total_order       Int        @default(0)
+  income            Int        @default(0)
+  bonus             Int        @default(0)
+  tip               Int        @default(0)
+  spending          Int        @default(0)
+  status            WorkStatus @default(ACTIVE)
+  created_at        DateTime   @default(now())
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
+}
+
+enum WorkStatus {
+  ACTIVE
+  COMPLETED
 }
