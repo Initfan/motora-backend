@@ -55,6 +55,8 @@ model Motorcycle {
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int  @unique
+
+  motorComponents MotorComponent[]
 }
 
 enum TRANSMISSION_TYPE {
@@ -95,4 +97,27 @@ model Income {
 
   work_session    WorkSession @relation(fields: [work_session_id], references: [id])
   work_session_id Int         @unique
+}
+
+model MotorComponent {
+  id                 Int             @id @default(autoincrement())
+  model              String
+  component          String
+  interval_km        Int
+  interval_month     Int
+  last_service_date  DateTime
+  last_service_km    Int
+  next_schedule_date DateTime
+  next_schedule_km   Int
+  status             ComponentStatus
+
+  motorcycle    Motorcycle @relation(fields: [motorcycle_id], references: [id])
+  motorcycle_id Int
+}
+
+enum ComponentStatus {
+  SAFE
+  DUE_SOON
+  OVERDUE
+  UNKNOWN
 }
