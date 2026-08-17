@@ -14,6 +14,7 @@ export const WorkModel = {
     kilometers_finish: t.Number(),
     total_order: t.Integer(),
     income: t.Object({
+      income: t.Number(),
       bonus: t.Number(),
       tip: t.Number(),
       spending: t.Number(),

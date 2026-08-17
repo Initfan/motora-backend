@@ -85,12 +85,13 @@ enum WorkStatus {
 }
 
 model Income {
-  id        Int @id @default(autoincrement())
-  income    Int @default(0)
-  bonus     Int @default(0)
-  tip       Int @default(0)
-  spending  Int @default(0)
-  incentive Int @default(0)
+  id         Int @id @default(autoincrement())
+  income     Int @default(0)
+  net_income Int @default(0)
+  bonus      Int @default(0)
+  tip        Int @default(0)
+  spending   Int @default(0)
+  incentive  Int @default(0)
 
   work_session    WorkSession @relation(fields: [work_session_id], references: [id])
   work_session_id Int         @unique

@@ -70,13 +70,21 @@ export class WorkSession {
 
         if (!workSession) throw new Error("There's no active working progress");
 
+        const income = session.income;
+        const netIncome =
+          income.bonus +
+          income.incentive +
+          income.tip +
+          income.income -
+          income.spending;
+
         return await tx.workSession.update({
           where: { id: session_id },
           data: {
             total_order,
             kilometers_finish,
             status: "COMPLETED",
-            incomes: { create: { ...session.income } },
+            incomes: { create: { ...income, net_income: netIncome } },
           },
           include: { incomes: true },
         });
