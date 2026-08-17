@@ -70,18 +70,28 @@ model WorkSession {
   goal_profit       Int
   fuel_condition    String
   total_order       Int        @default(0)
-  income            Int        @default(0)
-  bonus             Int        @default(0)
-  tip               Int        @default(0)
-  spending          Int        @default(0)
   status            WorkStatus @default(ACTIVE)
   created_at        DateTime   @default(now())
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int
+
+  incomes Income?
 }
 
 enum WorkStatus {
   ACTIVE
   COMPLETED
+}
+
+model Income {
+  id        Int @id @default(autoincrement())
+  income    Int @default(0)
+  bonus     Int @default(0)
+  tip       Int @default(0)
+  spending  Int @default(0)
+  incentive Int @default(0)
+
+  work_session    WorkSession @relation(fields: [work_session_id], references: [id])
+  work_session_id Int         @unique
 }

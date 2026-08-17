@@ -13,10 +13,12 @@ export const WorkModel = {
     session_id: t.Number(),
     kilometers_finish: t.Number(),
     total_order: t.Integer(),
-    income: t.Number(),
-    bonus: t.Number(),
-    tip: t.Number(),
-    spending: t.Number(),
+    income: t.Object({
+      bonus: t.Number(),
+      tip: t.Number(),
+      spending: t.Number(),
+      incentive: t.Number(),
+    }),
   }),
 } as const;
 

@@ -8,6 +8,7 @@ const work = new Elysia({
   name: "start-work",
 })
   .use(authPlugin)
+  .get("/", ({ user_id }) => WorkSession.getWorkSession(user_id))
   .post(
     "/start",
     ({ body, user_id }) => WorkSession.startWorkSession(body, user_id),
