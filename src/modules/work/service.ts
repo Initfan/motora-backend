@@ -11,6 +11,8 @@ export class WorkSession {
         orderBy: { created_at: "desc" },
       });
 
+      if (!session) throw new Error("There is no session in progress.");
+
       return status(200, {
         message: "Work session in progress",
         data: session,
