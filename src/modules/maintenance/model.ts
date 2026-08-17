@@ -8,9 +8,9 @@ export const MaintenanceModel = {
     interval_month: t.Integer(),
     last_service_date: t.Date(),
     last_service_km: t.Integer(),
-    next_schedule_date: t.Date(),
-    next_schedule_km: t.Integer(),
-    status: t.UnionEnum(["SAFE", "DUE_SOON", "OVERDUE", "UNKNOWN"]),
+    // next_schedule_date: t.Date(),
+    // next_schedule_km: t.Integer(),
+    // status: t.UnionEnum(["SAFE", "DUE_SOON", "OVERDUE", "UNKNOWN"]),
   }),
 } as const;
 

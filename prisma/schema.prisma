@@ -107,9 +107,9 @@ model MotorComponent {
   interval_month     Int
   last_service_date  DateTime
   last_service_km    Int
-  next_schedule_date DateTime
-  next_schedule_km   Int
-  status             ComponentStatus
+  next_schedule_date DateTime?
+  next_schedule_km   Int?
+  status             ComponentStatus @default(UNKNOWN)
 
   motorcycle    Motorcycle @relation(fields: [motorcycle_id], references: [id])
   motorcycle_id Int
