@@ -7,8 +7,20 @@ import { handlePrismaError } from "@/helper/error";
 export class MotorcycleService {
   static async GetMotorcycle(id: MotorModel["update"]["id"]) {
     try {
-      const motor = await prisma.motorcycle.delete({
-        where: { id },
+      const motor = await prisma.$transaction(async (tx) => {
+        const motor = await tx.motorcycle.findFirstOrThrow({
+          where: { id },
+        });
+
+        const lastWork = await tx.workSession.findFirst({
+          where: { user_id: motor.user_id },
+          orderBy: { created_at: "desc" },
+        });
+
+        return {
+          ...motor,
+          kilometers: lastWork?.kilometers_finish ?? motor.kilometers,
+        };
       });
 
       return status(200, { message: "Motorcycle Data", data: motor });
