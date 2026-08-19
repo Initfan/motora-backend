@@ -9,6 +9,12 @@ const work = new Elysia({
 })
   .use(authPlugin)
   .get("/", ({ user_id }) => WorkSession.getWorkSession(user_id))
+  .post("/income", ({ body }) => WorkSession.addIncome(body), {
+    body: WorkModel["income"],
+  })
+  .post("/expense", ({ body }) => WorkSession.addExpense(body), {
+    body: WorkModel["expense"],
+  })
   .post(
     "/start",
     ({ body, user_id }) => WorkSession.startWorkSession(body, user_id),

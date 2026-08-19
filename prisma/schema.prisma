@@ -54,7 +54,7 @@ model Motorcycle {
   status                 String?
 
   user    User @relation(fields: [user_id], references: [id])
-  user_id Int  @unique
+  user_id Int
 
   motorComponents MotorComponent[]
 }
@@ -73,12 +73,15 @@ model WorkSession {
   fuel_condition    String
   total_order       Int        @default(0)
   status            WorkStatus @default(ACTIVE)
+  started_at        DateTime   @default(now())
+  finished_at       DateTime?
   created_at        DateTime   @default(now())
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int
 
-  incomes Income?
+  incomes  Income[]
+  expenses Expense[]
 }
 
 enum WorkStatus {
@@ -87,16 +90,39 @@ enum WorkStatus {
 }
 
 model Income {
-  id         Int @id @default(autoincrement())
-  income     Int @default(0)
-  net_income Int @default(0)
-  bonus      Int @default(0)
-  tip        Int @default(0)
-  spending   Int @default(0)
-  incentive  Int @default(0)
+  id          Int         @id @default(autoincrement())
+  income_type INCOME_TYPE
+  amount      Int
+  description String?
+  created_at  DateTime    @default(now())
 
   work_session    WorkSession @relation(fields: [work_session_id], references: [id])
-  work_session_id Int         @unique
+  work_session_id Int
+}
+
+enum INCOME_TYPE {
+  ORDER
+  BONUS
+  TIP
+  INCENTIVE
+}
+
+model Expense {
+  id           Int          @id @default(autoincrement())
+  expense_type EXPENSE_TYPE
+  amount       Int
+  description  String?
+  created_at   DateTime     @default(now())
+
+  work_session    WorkSession @relation(fields: [work_session_id], references: [id])
+  work_session_id Int
+}
+
+enum EXPENSE_TYPE {
+  FUEL
+  PARKING
+  TOLL
+  OTHER
 }
 
 model MotorComponent {

@@ -59,13 +59,60 @@ export class WorkSession {
     }
   }
 
+  static async addIncome(data: WorkModel["income"]) {
+    try {
+      const income = await prisma.$transaction(async (tx) => {
+        await tx.workSession.findFirstOrThrow({
+          where: { id: data.work_session_id, AND: { status: "ACTIVE" } },
+        });
+
+        return await tx.income.create({
+          data,
+        });
+      });
+
+      return status(201, { message: "Income was added", income });
+    } catch (error: any) {
+      console.log(error);
+
+      return handlePrismaError(
+        error,
+        error.message ?? "Failed to Add Income, Try again later",
+      );
+    }
+  }
+
+  static async addExpense(data: WorkModel["expense"]) {
+    try {
+      const expense = await prisma.$transaction(async (tx) => {
+        await tx.workSession.findFirstOrThrow({
+          where: { id: data.work_session_id, AND: { status: "ACTIVE" } },
+        });
+
+        return await tx.expense.create({
+          data,
+        });
+      });
+
+      return status(201, { message: "Expense was added", expense });
+    } catch (error: any) {
+      console.log(error);
+
+      return handlePrismaError(
+        error,
+        error.message ?? "Failed to Add Expense, Try again later",
+      );
+    }
+  }
+
   static async finishWorkSession(data: WorkModel["finish"]) {
-    const { session_id, total_order, kilometers_finish, ...session } = data;
+    const { work_session_id, total_order, kilometers_finish, ...session } =
+      data;
 
     try {
       const work = await prisma.$transaction(async (tx) => {
         const workSession = await tx.workSession.findFirst({
-          where: { id: session_id, status: "ACTIVE" },
+          where: { id: work_session_id, status: "ACTIVE" },
         });
 
         if (!workSession) throw new Error("There's no active working progress");
@@ -79,12 +126,12 @@ export class WorkSession {
           income.spending;
 
         return await tx.workSession.update({
-          where: { id: session_id },
+          where: { id: work_session_id },
           data: {
             total_order,
             kilometers_finish,
             status: "COMPLETED",
-            incomes: { create: { ...income, net_income: netIncome } },
+            // incomes: { create: { ...income, net_income: netIncome } },
           },
           include: { incomes: true },
         });
