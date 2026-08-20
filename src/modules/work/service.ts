@@ -1,7 +1,7 @@
 import { prisma } from "@/utils/prisma";
 import { WorkModel } from "./model";
 import { status } from "elysia";
-import { handlePrismaError } from "@/helper/error";
+import { HandleError, handlePrismaError } from "@/helper/error";
 
 export class WorkSession {
   static async getWorkSession(user_id: WorkModel["user_id"]) {
@@ -106,8 +106,7 @@ export class WorkSession {
   }
 
   static async finishWorkSession(data: WorkModel["finish"]) {
-    const { work_session_id, total_order, kilometers_finish, ...session } =
-      data;
+    const { work_session_id, ...finish } = data;
 
     try {
       const work = await prisma.$transaction(async (tx) => {
@@ -115,25 +114,19 @@ export class WorkSession {
           where: { id: work_session_id, status: "ACTIVE" },
         });
 
-        if (!workSession) throw new Error("There's no active working progress");
+        if (!workSession)
+          throw new HandleError(404, "There's no active working progress");
 
-        const income = session.income;
-        const netIncome =
-          income.bonus +
-          income.incentive +
-          income.tip +
-          income.income -
-          income.spending;
+        if (data.kilometers_finish <= workSession.kilometers_start)
+          throw new HandleError(400, "You haven't taken the trip yet.");
 
         return await tx.workSession.update({
           where: { id: work_session_id },
           data: {
-            total_order,
-            kilometers_finish,
+            ...finish,
             status: "COMPLETED",
-            // incomes: { create: { ...income, net_income: netIncome } },
+            finished_at: new Date(Date.now()),
           },
-          include: { incomes: true },
         });
       });
 

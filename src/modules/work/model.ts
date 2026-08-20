@@ -25,13 +25,6 @@ export const WorkModel = {
     work_session_id: t.Number(),
     kilometers_finish: t.Number(),
     total_order: t.Integer(),
-    income: t.Object({
-      income: t.Number(),
-      bonus: t.Number(),
-      tip: t.Number(),
-      spending: t.Number(),
-      incentive: t.Number(),
-    }),
   }),
 } as const;
 
