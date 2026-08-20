@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ServiceFund" ALTER COLUMN "method" SET DEFAULT 'PERCENTAGE',
+ALTER COLUMN "value" SET DEFAULT 10;

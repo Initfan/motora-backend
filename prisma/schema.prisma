@@ -20,6 +20,8 @@ model User {
   motorcycles Motorcycle[]
 
   workSessions WorkSession[]
+
+  serviceFunds ServiceFund?
 }
 
 model Driver {
@@ -203,4 +205,21 @@ model FuelRecord {
   work_session_id Int
   motorcycle      Motorcycle  @relation(fields: [motorcycle_id], references: [id])
   motorcycle_id   Int
+}
+
+model ServiceFund {
+  id        Int               @id @default(autoincrement())
+  method    ServiceFundMethod @default(PERCENTAGE)
+  value     Int               @default(10)
+  is_active Boolean           @default(true)
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+}
+
+enum ServiceFundMethod {
+  FIXED_DAILY
+  PERCENTAGE
+  PER_KM
+  MONTHLY_TARGET
 }

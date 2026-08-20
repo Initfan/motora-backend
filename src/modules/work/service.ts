@@ -3,6 +3,8 @@ import { WorkModel } from "./model";
 import { status } from "elysia";
 import { HandleError, handlePrismaError } from "@/helper/error";
 
+type FUND_METHOD = "FIXED_DAILY" | "PERCENTAGE" | "PER_KM" | "MONTHLY_TARGET";
+
 export class WorkSession {
   static async getWorkSession(user_id: WorkModel["user_id"]) {
     try {
@@ -106,11 +108,35 @@ export class WorkSession {
     }
   }
 
+  private static calculateServiceFund(
+    method: FUND_METHOD,
+    value: number,
+    income: number,
+    km: number,
+  ) {
+    switch (method) {
+      case "FIXED_DAILY":
+        return value;
+        break;
+      // case "MONTHLY_TARGET":
+      //   return value / 30;
+      //   break;
+      case "PERCENTAGE":
+        return value / 100;
+        break;
+      case "PER_KM":
+        return value;
+        break;
+      default:
+        return 0;
+    }
+  }
+
   static async finishWorkSession(data: WorkModel["finish"]) {
     const { work_session_id, ...finish } = data;
 
     try {
-      const work = await prisma.$transaction(async (tx) => {
+      const { work, fund } = await prisma.$transaction(async (tx) => {
         const workSession = await tx.workSession.findFirst({
           where: { id: work_session_id, status: "ACTIVE" },
         });
@@ -121,7 +147,7 @@ export class WorkSession {
         if (data.kilometers_finish <= workSession.kilometers_start)
           throw new HandleError(400, "You haven't taken the trip yet.");
 
-        return await tx.workSession.update({
+        const work = await tx.workSession.update({
           where: { id: work_session_id },
           data: {
             ...finish,
@@ -133,14 +159,25 @@ export class WorkSession {
             expenses: { select: { amount: true } },
           },
         });
+
+        const fund = await tx.serviceFund.findFirstOrThrow({
+          where: { user_id: work.user_id },
+        });
+
+        return { work, fund };
       });
+
+      const distance = work.kilometers_finish - work.kilometers_start;
 
       const income = work.incomes.reduce((a, b) => a + b.amount, 0);
       const expense = work.expenses.reduce((a, b) => a + b.amount, 0);
-      const service_fund = 1;
+      const service_fund = this.calculateServiceFund(
+        fund.method,
+        fund.value,
+        income,
+        distance,
+      );
       const net_profit = Number(income - expense - service_fund);
-
-      const distance = work.kilometers_finish - work.kilometers_start;
 
       await prisma.workSummary.create({
         data: {

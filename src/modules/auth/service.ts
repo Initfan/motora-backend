@@ -33,7 +33,7 @@ export class Auth {
 
     try {
       let user = await prisma.user.create({
-        data: { ...data, password },
+        data: { ...data, password, serviceFunds: { create: {} } },
         select: { username: true, email: true },
       });
 
