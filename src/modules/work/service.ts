@@ -135,18 +135,34 @@ export class WorkSession {
         });
       });
 
-      const incomes = work.incomes.reduce((a, b) => a + b.amount, 0);
-      const expenses = work.expenses.reduce((a, b) => a + b.amount, 0);
+      const income = work.incomes.reduce((a, b) => a + b.amount, 0);
+      const expense = work.expenses.reduce((a, b) => a + b.amount, 0);
       const service_fund = 1;
-      const net_profit = Number(incomes - expenses - service_fund);
+      const net_profit = Number(income - expense - service_fund);
 
       const distance = work.kilometers_finish - work.kilometers_start;
+
+      await prisma.workSummary.create({
+        data: {
+          work_session_id: work.id,
+          income,
+          expense,
+          service_fund,
+          net_profit,
+          distance,
+          order: work.total_order,
+          profit_per_km: net_profit / distance,
+          goal_profit: work.goal_profit,
+          achieved: income,
+          status: income >= work.goal_profit ? "ACHIEVED" : "NOT_ACHIEVED",
+        },
+      });
 
       return status(200, {
         message: "Work Session has Completed",
         summary: {
-          incomes,
-          expenses,
+          income,
+          expense,
           service_fund,
           net_profit,
         },
@@ -155,16 +171,11 @@ export class WorkSession {
           order: work.total_order,
           profit_per_km: (net_profit / distance).toFixed(0),
           target: work.goal_profit,
-          achieved: incomes,
-          status:
-            incomes >= work.goal_profit
-              ? "Target Archieved"
-              : "Target Archieve Yet",
+          achieved: income,
+          status: income >= work.goal_profit ? "ACHIEVED" : "NOT_ACHIEVED",
         },
       });
     } catch (error: any) {
-      console.log(error);
-
       return handlePrismaError(
         error,
         error.message ?? "Failed to Finish Work Session, Try again later",

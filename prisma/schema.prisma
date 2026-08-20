@@ -86,11 +86,36 @@ model WorkSession {
   expenses Expense[]
 
   fuelRecords FuelRecord[]
+
+  workSummaries WorkSummary?
 }
 
 enum WorkStatus {
   ACTIVE
   COMPLETED
+}
+
+model WorkSummary {
+  id           Int @id @default(autoincrement())
+  income       Int
+  expense      Int
+  service_fund Int
+  net_profit   Int
+
+  distance      Int
+  order         Int
+  profit_per_km Int
+  goal_profit   Int
+  achieved      Int
+  status        SUMMARY_STATUS
+
+  work_session    WorkSession @relation(fields: [work_session_id], references: [id])
+  work_session_id Int         @unique
+}
+
+enum SUMMARY_STATUS {
+  ACHIEVED
+  NOT_ACHIEVED
 }
 
 model Income {
