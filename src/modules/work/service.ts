@@ -11,7 +11,8 @@ export class WorkSession {
         orderBy: { created_at: "desc" },
       });
 
-      if (!session) throw new Error("There is no session in progress.");
+      if (!session)
+        throw new HandleError(404, "There is no work session in progress.");
 
       return status(200, {
         message: "Work session in progress",
@@ -127,10 +128,40 @@ export class WorkSession {
             status: "COMPLETED",
             finished_at: new Date(Date.now()),
           },
+          include: {
+            incomes: { select: { amount: true } },
+            expenses: { select: { amount: true } },
+          },
         });
       });
 
-      return status(201, { message: "Work Session Finished", session: work });
+      const incomes = work.incomes.reduce((a, b) => a + b.amount, 0);
+      const expenses = work.expenses.reduce((a, b) => a + b.amount, 0);
+      const service_fund = 1;
+      const net_profit = Number(incomes - expenses - service_fund);
+
+      const distance = work.kilometers_finish - work.kilometers_start;
+
+      return status(200, {
+        message: "Work Session has Completed",
+        summary: {
+          incomes,
+          expenses,
+          service_fund,
+          net_profit,
+        },
+        performance: {
+          distance,
+          order: work.total_order,
+          profit_per_km: (net_profit / distance).toFixed(0),
+          target: work.goal_profit,
+          achieved: incomes,
+          status:
+            incomes >= work.goal_profit
+              ? "Target Archieved"
+              : "Target Archieve Yet",
+        },
+      });
     } catch (error: any) {
       console.log(error);
 
