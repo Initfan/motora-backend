@@ -8,7 +8,7 @@ const maintenance = new Elysia({
   name: "maintenance",
 })
   .use(authPlugin)
-  .post("/component", ({ body }) => Maintenance.addComponent(body), {
+  .post("/", ({ body }) => Maintenance.addComponent(body), {
     body: MaintenanceModel.component,
   });
 

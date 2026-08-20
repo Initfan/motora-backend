@@ -127,17 +127,17 @@ enum EXPENSE_TYPE {
 
 model MotorComponent {
   id                 Int             @id @default(autoincrement())
-  model              String
-  component          String
-  interval_km        Int
-  interval_month     Int
   last_service_date  DateTime
   last_service_km    Int
   next_schedule_date DateTime?
   next_schedule_km   Int?
   status             ComponentStatus @default(UNKNOWN)
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @default(now()) @updatedAt()
 
-  motorcycle    Motorcycle @relation(fields: [motorcycle_id], references: [id])
+  component     MaintenanceComponent @relation(fields: [component_id], references: [id])
+  component_id  Int
+  motorcycle    Motorcycle           @relation(fields: [motorcycle_id], references: [id])
   motorcycle_id Int
 }
 
@@ -146,4 +146,15 @@ enum ComponentStatus {
   DUE_SOON
   OVERDUE
   UNKNOWN
+}
+
+model MaintenanceComponent {
+  id                     Int     @id @default(autoincrement())
+  name                   String
+  default_interval_km    Int
+  default_interval_month Int
+  is_critical            Boolean
+  is_active              Boolean @default(true)
+
+  motorComponents MotorComponent[]
 }

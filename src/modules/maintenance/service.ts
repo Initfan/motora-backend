@@ -21,29 +21,34 @@ export class Maintenance {
   }
 
   static async addComponent(data: MaintenanceModel["component"]) {
-    const { motor_id, ...component } = data;
     try {
       const comp = await prisma.$transaction(async (tx) => {
         const motor = await tx.motorcycle.findFirstOrThrow({
-          where: { id: motor_id },
+          where: { id: data.motorcycle_id },
         });
 
-        const nextKm = data.last_service_km + data.interval_km;
-        const nextDate = addMonths(data.last_service_date, data.interval_month);
-        const status: STATUS = this.statusComponent(
+        const maintenance = await tx.maintenanceComponent.findFirstOrThrow({
+          where: { id: data.component_id },
+        });
+
+        const nextKm = data.last_service_km + maintenance.default_interval_km;
+        const nextDate = addMonths(
+          data.last_service_date,
+          maintenance.default_interval_month,
+        );
+
+        const status = this.statusComponent(
           motor.kilometers,
           data.last_service_km,
-          data.interval_km,
+          maintenance.default_interval_km,
         );
 
         return await tx.motorComponent.create({
           data: {
-            ...component,
-            model: motor.model,
-            motorcycle_id: motor.id,
+            ...data,
+            status,
             next_schedule_date: nextDate,
             next_schedule_km: nextKm,
-            status,
           },
         });
       });
