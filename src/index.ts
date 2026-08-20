@@ -5,6 +5,7 @@ import user from "./modules/user";
 import motorcycle from "./modules/motorcycle";
 import work from "./modules/work";
 import maintenance from "./modules/maintenance";
+import fuel from "./modules/fuel";
 
 const app = new Elysia({ prefix: "api" })
   .use(cors())
@@ -13,6 +14,7 @@ const app = new Elysia({ prefix: "api" })
   .use(motorcycle)
   .use(work)
   .use(maintenance)
+  .use(fuel)
   .listen(3001);
 
 console.log(
