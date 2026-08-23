@@ -6,6 +6,7 @@ import motorcycle from "./modules/motorcycle";
 import work from "./modules/work";
 import maintenance from "./modules/maintenance";
 import fuel from "./modules/fuel";
+import bearer from "@elysia/bearer";
 
 const app = new Elysia({ prefix: "api" })
   .use(cors())

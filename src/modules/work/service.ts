@@ -35,10 +35,10 @@ export class WorkSession {
     try {
       const session = await prisma.$transaction(async (tx) => {
         const motor = await tx.motorcycle.findFirst({
-          where: { user_id },
+          where: { id: data.motorcycle_id },
         });
 
-        if (!motor) throw new Error("Add Motorcycle to Start Working");
+        if (!motor) throw new HandleError(404, "Motorcycle not found.");
 
         const activeSession = await tx.workSession.findFirst({
           where: { status: "ACTIVE" },
@@ -46,7 +46,7 @@ export class WorkSession {
         });
 
         if (activeSession)
-          throw new Error("There is already a session in progress.");
+          throw new HandleError(400, "There is already a session in progress.");
 
         return await tx.workSession.create({
           data: { ...data, user_id },
@@ -157,6 +157,14 @@ export class WorkSession {
           include: {
             incomes: { select: { amount: true } },
             expenses: { select: { amount: true } },
+          },
+        });
+
+        await tx.motorcycle.update({
+          where: { id: work.motorcycle_id },
+          data: {
+            kilometers: data.kilometers_finish,
+            avg_kilometers_per_day: distance,
           },
         });
 

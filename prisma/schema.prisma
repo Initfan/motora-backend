@@ -61,6 +61,8 @@ model Motorcycle {
   motorComponents MotorComponent[]
 
   fuelRecords FuelRecord[]
+
+  workSessions WorkSession[]
 }
 
 enum TRANSMISSION_TYPE {
@@ -83,6 +85,9 @@ model WorkSession {
 
   user    User @relation(fields: [user_id], references: [id])
   user_id Int
+
+  motorcycle    Motorcycle @relation(fields: [motorcycle_id], references: [id])
+  motorcycle_id Int
 
   incomes  Income[]
   expenses Expense[]

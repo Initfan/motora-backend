@@ -1,4 +1,5 @@
 import { prisma } from "@/utils/prisma";
+import bcrypt from "bcrypt";
 
 const motorComponents = [
   {
@@ -199,9 +200,31 @@ const motorComponents = [
   },
 ];
 
+const user = {
+  username: "initfan",
+  email: "fan@mail.com",
+  password: bcrypt.hashSync("12345678", 10),
+};
+
+const motor = {
+  brand: "Honda Kentang",
+  model: "Vario 160",
+  year: "2023",
+  police_number: "B 5678 ABC",
+  kilometers: 12500,
+};
+
 async function main() {
-  await prisma.maintenanceComponent.createMany({
-    data: motorComponents,
+  await prisma.$transaction(async (tx) => {
+    await tx.user.create({
+      data: user,
+    });
+    await tx.motorcycle.create({
+      data: { ...motor, user_id: 1 },
+    });
+    await tx.maintenanceComponent.createMany({
+      data: motorComponents,
+    });
   });
 }
 

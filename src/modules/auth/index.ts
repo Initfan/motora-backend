@@ -1,7 +1,6 @@
 import { Elysia, status } from "elysia";
 import { Auth } from "./service";
 import { AuthModel } from "./model";
-import { SignJWT } from "jose";
 import { cookieModel } from "@/utils/model";
 
 const auth = new Elysia({ name: "auth" })
@@ -45,7 +44,7 @@ const auth = new Elysia({ name: "auth" })
               maxAge: 60 * 60 * 24 * 7,
             });
 
-            return status(200, { message: "Login Success", data });
+            return status(200, { message: "Login Success", data, token });
           },
           {
             body: AuthModel.signInBody,

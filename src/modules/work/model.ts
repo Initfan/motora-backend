@@ -4,6 +4,7 @@ import { t, type UnwrapSchema } from "elysia";
 export const WorkModel = {
   user_id: t.Number(),
   start: t.Object({
+    motorcycle_id: t.Number(),
     kilometers_start: t.Number(),
     platform: t.String(),
     goal_profit: t.Number(),
