@@ -8,6 +8,9 @@
 #prisma
 /src/generated
 
+# motor image
+/public/motors
+
 #env
 .env
 .env.*

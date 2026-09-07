@@ -54,7 +54,7 @@ export class MotorcycleService {
         );
 
         await Bun.write(filepath, outputBuffer);
-        motor_url = `motors/${filename}`;
+        motor_url = `motora/${filename}`;
       }
 
       let { kilometers, last_service_date, motor, ...cleanData } = data;

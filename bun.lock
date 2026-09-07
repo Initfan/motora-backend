@@ -7,6 +7,7 @@
       "dependencies": {
         "@elysia/bearer": "^1.4.4",
         "@elysia/cors": "^1.4.2",
+        "@elysia/static": "^1.4.11",
         "@prisma/adapter-pg": "^7.9.1",
         "@prisma/client": "^7.9.1",
         "bcrypt": "^6.0.0",
@@ -35,6 +36,8 @@
     "@elysia/bearer": ["@elysia/bearer@1.4.4", "", { "peerDependencies": { "elysia": ">= 1.4.3" } }, "sha512-mYf6rj1e/N1h579udHiuvqvU0+i0O/qbKhNCSfxTln0StXztMGUX234MeiIFhbnq9sUBs37bDApy2ou8lflQUg=="],
 
     "@elysia/cors": ["@elysia/cors@1.4.2", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-dXkfo1IxZWJkJReNYnPJorJqb+XpWno0D/YWlMEJSkiFIFd751zJ4R/YswAYdo88mLWo8cycEj673o7L+gbxsw=="],
+
+    "@elysia/static": ["@elysia/static@1.4.11", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-L3PN8V+cgz9Oz9kTow7ed3DHHCTHb9ZqZZDLxmKhrIKcFmWvjqzTm9TcMR2aLKjjls+QMSGuB7ZyaO+usIXovA=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
 

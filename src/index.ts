@@ -6,7 +6,19 @@ import motorcycle from "./modules/motorcycle";
 import work from "./modules/work";
 import maintenance from "./modules/maintenance";
 import fuel from "./modules/fuel";
-import bearer from "@elysia/bearer";
+import staticPlugin from "@elysia/static";
+
+const image = new Elysia()
+  .use(
+    staticPlugin({
+      alwaysStatic: true,
+      prefix: "motora",
+      assets: "public/motors",
+    }),
+  )
+  .listen(3002);
+
+console.log(image.server?.hostname, image.server?.port);
 
 const app = new Elysia({ prefix: "api" })
   .use(cors())
