@@ -14,6 +14,7 @@ export const WorkModel = {
     work_session_id: t.Number(),
     income_type: t.UnionEnum(["ORDER", "BONUS", "TIP", "INCENTIVE"]),
     amount: t.Number(),
+    distance: t.Optional(t.Number()),
     description: t.Optional(t.String()),
   }),
   expense: t.Object({

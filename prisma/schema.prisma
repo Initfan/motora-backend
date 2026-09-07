@@ -130,6 +130,7 @@ model Income {
   id          Int         @id @default(autoincrement())
   income_type INCOME_TYPE
   amount      Int
+  distance    Float       @default(0)
   description String?
   created_at  DateTime    @default(now())
 
