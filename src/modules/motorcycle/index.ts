@@ -12,6 +12,8 @@ const motorcycle = new Elysia({
     MotorcycleService.GetMotorcycle(Number(params.id)),
   )
 
+  .get("/user", ({ user_id }) => MotorcycleService.GetUserMotors(user_id))
+
   .put("", ({ body }) => MotorcycleService.UpdateMotorcycle(body), {
     body: MotorModel["update"],
   })

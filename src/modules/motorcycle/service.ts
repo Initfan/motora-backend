@@ -8,6 +8,24 @@ import { join } from "node:path";
 import { log } from "node:console";
 
 export class MotorcycleService {
+  static async GetUserMotors(user_id: number) {
+    try {
+      const motor = await prisma.$transaction(async (tx) => {
+        const motor = await tx.motorcycle.findMany({
+          where: { user_id },
+        });
+
+        return {
+          ...motor,
+        };
+      });
+
+      return status(200, { message: "Motorcycle Data", data: motor });
+    } catch (e: any) {
+      return handlePrismaError(e, "Failed to Get Motorcycle, Try again later");
+    }
+  }
+
   static async GetMotorcycle(id: MotorModel["update"]["id"]) {
     try {
       const motor = await prisma.$transaction(async (tx) => {
