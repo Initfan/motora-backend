@@ -41,7 +41,7 @@ export class WorkSession {
         if (!motor) throw new HandleError(404, "Motorcycle not found.");
 
         const activeSession = await tx.workSession.findFirst({
-          where: { status: "ACTIVE" },
+          where: { status: "ACTIVE", AND: { user_id } },
           orderBy: { created_at: "desc" },
         });
 
