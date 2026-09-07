@@ -62,6 +62,22 @@ export class WorkSession {
     }
   }
 
+  static async getIncomes(work_session_id: number) {
+    try {
+      const incomes = await prisma.income.findMany({
+        where: { work_session_id },
+      });
+
+      return status(200, { message: "Work Incomes", data: incomes });
+    } catch (error: any) {
+      console.log(error);
+      return handlePrismaError(
+        error,
+        error.message ?? "Failed to Get Incomes, Try again later",
+      );
+    }
+  }
+
   static async addIncome(data: WorkModel["income"]) {
     try {
       const income = await prisma.$transaction(async (tx) => {
