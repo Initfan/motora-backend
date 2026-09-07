@@ -2,14 +2,15 @@ import { t, UnwrapSchema } from "elysia";
 
 export const MotorModel = {
   create: t.Object({
+    motor: t.File(),
     brand: t.String(),
     model: t.String(),
     year: t.String(),
     transmission: t.UnionEnum(["MATIC", "MANUAL"]),
     police_number: t.String(),
-    kilometers: t.Number(),
+    kilometers: t.String(),
     avg_kilometers_per_day: t.Optional(t.Number()),
-    last_service_date: t.Optional(t.Date()),
+    last_service_date: t.String(),
     status: t.Optional(t.String()),
   }),
   update: t.Object({

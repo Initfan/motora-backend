@@ -2,7 +2,10 @@ import { prisma } from "@/utils/prisma";
 import { MotorModel } from "./model";
 import { UserModel } from "../user/model";
 import { status } from "elysia";
-import { handlePrismaError } from "@/helper/error";
+import { HandleError, handlePrismaError } from "@/helper/error";
+import sharp from "sharp";
+import { join } from "node:path";
+import { log } from "node:console";
 
 export class MotorcycleService {
   static async GetMotorcycle(id: MotorModel["update"]["id"]) {
@@ -34,17 +37,52 @@ export class MotorcycleService {
     user_id: UserModel["user_id"],
   ) {
     try {
-      const motor = await prisma.$transaction(async (tx) => {
+      let motor_url: string;
+      if (data.motor instanceof File) {
+        const inputBuffer = Buffer.from(await data.motor.arrayBuffer());
+
+        const outputBuffer = await sharp(inputBuffer)
+          .webp({
+            quality: 80,
+          })
+          .toBuffer();
+
+        const filename = `${crypto.randomUUID()}.webp`;
+        const filepath = join(
+          join(process.cwd(), "public", "motors"),
+          filename,
+        );
+
+        await Bun.write(filepath, outputBuffer);
+        motor_url = `motors/${filename}`;
+      }
+
+      let { kilometers, last_service_date, motor, ...cleanData } = data;
+      const kilometer = Number(kilometers);
+      const service = new Date(last_service_date);
+
+      if (Number.isNaN(kilometer) || Number.isNaN(service.getTime()))
+        throw new HandleError(401, "Data tidak sesuai");
+
+      const addMotor = await prisma.$transaction(async (tx) => {
         tx.motorcycle.findFirstOrThrow({
           where: { police_number: data.police_number },
         });
         return await tx.motorcycle.create({
-          data: { ...data, user_id },
+          data: {
+            ...cleanData,
+            user_id,
+            motor_url,
+            kilometers: kilometer,
+            last_service_date: service,
+          },
         });
       });
 
-      return status(201, { message: "Motorcycle Was Created", data: motor });
+      return status(201, { message: "Motorcycle Was Created", data: addMotor });
     } catch (e: any) {
+      console.log(e);
+
       return handlePrismaError(
         e,
         "Failed to Create Motorcycle, Try again later",

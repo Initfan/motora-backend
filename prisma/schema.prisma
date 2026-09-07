@@ -45,6 +45,7 @@ enum JOB_TYPE {
 
 model Motorcycle {
   id                     Int               @id @default(autoincrement())
+  motor_url              String?
   brand                  String
   model                  String
   year                   String
