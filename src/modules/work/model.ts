@@ -14,19 +14,19 @@ export const WorkModel = {
     work_session_id: t.Number(),
     income_type: t.UnionEnum(["ORDER", "BONUS", "TIP", "INCENTIVE"]),
     amount: t.Number(),
-    distance: t.Optional(t.Number()),
+    order: t.Number(),
+    distance: t.Number(),
     description: t.Optional(t.String()),
   }),
   expense: t.Object({
     work_session_id: t.Number(),
-    expense_type: t.UnionEnum(["FUEL", "PARKING", "TOLL", "OTHER"]),
+    expense_type: t.UnionEnum(["PARKING", "TOLL", "OTHER"]),
     amount: t.Number(),
     description: t.Optional(t.String()),
   }),
   finish: t.Object({
     work_session_id: t.Number(),
     kilometers_finish: t.Number(),
-    total_order: t.Integer(),
   }),
 } as const;
 

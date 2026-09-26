@@ -10,6 +10,7 @@ export class WorkSession {
     try {
       const session = await prisma.workSession.findFirst({
         where: { status: "ACTIVE", AND: { user_id } },
+        include: { motorcycle: true },
         orderBy: { created_at: "desc" },
       });
 
@@ -81,12 +82,23 @@ export class WorkSession {
   static async addIncome(data: WorkModel["income"]) {
     try {
       const income = await prisma.$transaction(async (tx) => {
+        const { order, ...income } = data;
+
         await tx.workSession.findFirstOrThrow({
           where: { id: data.work_session_id, AND: { status: "ACTIVE" } },
         });
 
+        await tx.workSession.update({
+          where: { id: data.work_session_id },
+          data: {
+            total_order: { increment: order },
+            total_distance: { increment: data.distance },
+            total_income: { increment: data.amount },
+          },
+        });
+
         return await tx.income.create({
-          data,
+          data: income,
         });
       });
 
@@ -106,6 +118,11 @@ export class WorkSession {
       const expense = await prisma.$transaction(async (tx) => {
         await tx.workSession.findFirstOrThrow({
           where: { id: data.work_session_id, AND: { status: "ACTIVE" } },
+        });
+
+        await tx.workSession.update({
+          where: { id: data.work_session_id },
+          data: { total_expense: { increment: data.amount } },
         });
 
         return await tx.expense.create({

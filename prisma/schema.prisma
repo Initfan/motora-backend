@@ -79,6 +79,10 @@ model WorkSession {
   goal_profit       Int
   fuel_condition    String
   total_order       Int        @default(0)
+  total_distance    Int        @default(0)
+  total_income      Int        @default(0)
+  total_expense     Int        @default(0)
+  total_fuel        Int        @default(0)
   status            WorkStatus @default(ACTIVE)
   started_at        DateTime   @default(now())
   finished_at       DateTime?
@@ -200,11 +204,11 @@ model MaintenanceComponent {
 model FuelRecord {
   id              Int      @id @default(autoincrement())
   odometer        Int
-  fuel_type       String
+  fuel_type       String?
   liters          Float
   total_price     Int
   price_per_liter Int
-  full_tank       Boolean
+  full_tank       Boolean? @default(false)
   station         String   @default("Pertamina")
   filled_at       DateTime @default(now())
 
