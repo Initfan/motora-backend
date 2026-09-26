@@ -29,6 +29,56 @@ export class WorkSession {
     }
   }
 
+  static async getWorkActivities(
+    user_id: WorkModel["user_id"],
+    from_date: WorkModel["getQuery"]["from_date"],
+    to_date: WorkModel["getQuery"]["to_date"],
+  ) {
+    const start = new Date(from_date);
+    const end = new Date(to_date);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      throw new HandleError(400, "Invalid date format");
+    }
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    const diffDays =
+      Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+    if (diffDays > 7) {
+      return status(400, {
+        success: false,
+        message: "Date range cannot exceed 7 days",
+      });
+    }
+
+    try {
+      const data = await prisma.workSession.findMany({
+        where: {
+          created_at: {
+            gte: start,
+            lte: end,
+          },
+          AND: { user_id, status: "COMPLETED" },
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      });
+
+      return {
+        success: true,
+        start,
+        end,
+        data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   static async startWorkSession(
     data: WorkModel["start"],
     user_id: WorkModel["user_id"],

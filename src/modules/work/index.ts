@@ -9,6 +9,14 @@ const work = new Elysia({
 })
   .use(authPlugin)
   .get("/", ({ user_id }) => WorkSession.getWorkSession(user_id))
+  .get(
+    "/activity",
+    ({ user_id, query }) =>
+      WorkSession.getWorkActivities(user_id, query.from_date, query.to_date),
+    {
+      query: WorkModel["getQuery"],
+    },
+  )
   .get("/:work_session_id/incomes", ({ params }) =>
     WorkSession.getIncomes(Number(params.work_session_id)),
   )

@@ -10,6 +10,10 @@ export const WorkModel = {
     goal_profit: t.Number(),
     fuel_condition: t.String(),
   }),
+  getQuery: t.Object({
+    from_date: t.String(),
+    to_date: t.String(),
+  }),
   income: t.Object({
     work_session_id: t.Number(),
     income_type: t.UnionEnum(["ORDER", "BONUS", "TIP", "INCENTIVE"]),
